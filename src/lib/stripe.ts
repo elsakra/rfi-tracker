@@ -1,9 +1,20 @@
 import Stripe from 'stripe'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-11-17.clover',
-  typescript: true,
-})
+// Lazy initialization to avoid build-time errors when env vars aren't set
+let stripeInstance: Stripe | null = null
+
+export function getStripe(): Stripe {
+  if (!stripeInstance) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('STRIPE_SECRET_KEY is not set')
+    }
+    stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-11-17.clover',
+      typescript: true,
+    })
+  }
+  return stripeInstance
+}
 
 export const PLANS = {
   starter: {

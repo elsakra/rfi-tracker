@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { stripe, PLANS, type PlanType } from '@/lib/stripe'
+import { getStripe, PLANS, type PlanType } from '@/lib/stripe'
 
 export async function POST(request: Request) {
   try {
@@ -16,6 +16,8 @@ export async function POST(request: Request) {
     if (!priceId || !plan || !PLANS[plan as PlanType]) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
     }
+
+    const stripe = getStripe()
 
     // Get or create Stripe customer
     const { data: profile } = await supabase

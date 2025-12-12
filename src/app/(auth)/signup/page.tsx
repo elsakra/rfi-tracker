@@ -103,7 +103,7 @@ export default function SignupPage() {
         .update({
           full_name: fullName || null,
           company_name: companyName || null,
-        })
+        } as never)
         .eq('id', user.id)
 
       if (error) throw error

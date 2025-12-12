@@ -70,7 +70,7 @@ function SettingsContent() {
         .update({
           full_name: fullName,
           company_name: companyName,
-        })
+        } as never)
         .eq('id', profile.id)
 
       if (error) throw error

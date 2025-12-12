@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 import type Stripe from 'stripe'
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+// Lazy initialization for supabaseAdmin to avoid build-time errors
+function getSupabaseAdmin() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('Supabase environment variables not set')
+  }
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  )
+}
 
 export async function POST(request: Request) {
   const body = await request.text()
@@ -18,6 +24,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing signature' }, { status: 400 })
   }
 
+  const stripe = getStripe()
+  const supabaseAdmin = getSupabaseAdmin()
   let event: Stripe.Event
 
   try {
