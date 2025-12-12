@@ -1,7 +1,8 @@
 # RFI Tracker - Agent Notes
 
 > Last updated: December 12, 2025
-> Status: Fully functional and deployed
+> Status: Fully functional, deployed to Vercel (auto-deploys from main branch)
+> Build: Tested locally, passing
 
 ## Overview
 
